@@ -10,29 +10,73 @@ def wisdom(strategies, needs, prices, profits):
     j_avg = 0
     needlist = []
     P_M = {}
+    d_prft = [7, -5, -10]
+    j_prft = [2, -1, -5]
+    d_needs = []
+    j_needs = []
+    d_probs = []
+    j_probs = []
+    the_str = []
 
-    for i in range(1, 10):
-        for j in range(1, 10):
+    for ge in needs:
+        d_needs.append(ge[0])
+        j_needs.append(ge[1])
+
+    for i in range(6):
+        for j in range(6):
             needlist.append([i, j])
 
-    # Вот здесь надо адаптировать формулу под
-    # то, что у меня вместо чисел в стратегиях
-    # листы.
+    # Лучше остановиться здесь и верить в то, что всё хорошо.
+    # Правда. Лучше перестать читать код прямо здесь.
+    # Дальше всё очень страшно, поверьте.
+    # Мне самому страшно.
 
     for i, _a in enumerate(strategies):
         P_M[i] = {}
         for j, _p in enumerate(needlist):
             if _a == _p:
-                P_M[i][j] = _a * prices[1]
-            elif _a > _p:
-                P_M[i][j] = _p * prices[1] + (_a - _p) * prices[0]
+                P_M[i][j] = _a[0] * d_prft[0] + _a[1] * j_prft[0]
+            elif _a[0] > _p[0] and _a[1] == _p[1]:
+                P_M[i][j] = (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[1]) + _a[1] * j_prft[0]  # p * prices[1] + (_a - _p) * prices[0]
+            elif _a[0] == _p[0] and _a[1] > _p[1]:
+                P_M[i][j] = (_p[1] * j_prft[0] + (_a[1] - _p[1]) * j_prft[1]) + _a[0] * d_prft[0]
+            elif _a[0] > _p[0] and _a[1] > _p[1]:
+                P_M[i][j] = (_p[1] * j_prft[0] + (_a[1] - _p[1]) * j_prft[1]) + (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[1])
             else:
-                P_M[i][j] = _a * prices[1] + (_p - _a) * prices[2]
+                P_M[i][j] = 2  # P_M[i][j] = _a * prices[1] + (_p - _a) * prices[2]
 
-    for i in P_M.keys():
-        print(P_M[i])
+    # And now for something completely different. The possibilities
+    d_needs = sorted(d_needs)
+    j_needs = sorted(j_needs)
 
-    for client in needs:
+    for i in reversed(range(5)):
+        res = []
+        for k in range(6):
+            if k <= i:
+                res.append(1 - d_needs[k])
+            else:
+                res.append(d_needs[k])
+        d_probs.append(sum(res) / 6)
+    d_probs.append(sum(d_needs) / 6)
+    print("d_probs =", d_probs)
+    the_str.append(d_probs.index(max(d_probs)))
+
+    for i in reversed(range(5)):
+        res = []
+        for k in range(6):
+            if k <= i:
+                res.append(1 - j_needs[k])
+            else:
+                res.append(j_needs[k])
+        j_probs.append(sum(res) / 6)
+    j_probs.append(sum(j_needs) / 6)
+    print("j_probs =", j_probs)
+    the_str.append(j_probs.index(max(j_probs)))
+    print(the_str)
+
+
+    # Это не нужно и будет удалено (возможно)
+    ''' for client in needs:
         d_avg += client[0]
         j_avg += client[1]
 
@@ -45,7 +89,9 @@ def wisdom(strategies, needs, prices, profits):
         kek = ((d_avg * profits[0] * strtg[0]) + (j_avg * profits[1]) * strtg[1]) - ((d_avg * prices[0] * strtg[0]) + (j_avg * prices[1]) * strtg[1])
         varg.append(kek)
     print('varg = ', varg)
-    return varg.index(max(varg))
+    return varg.index(max(varg)) '''
+    return 12
+
 
 def move():
     global cash
@@ -62,17 +108,18 @@ def move():
     strategies = []
     needs = []
 
-    for i in range(1, 10):
-        for j in range(1, 10):
+    for i in range(6):
+        for j in range(6):
             strategies.append([i, j])
 
-    for i in range(5):
-        d_need = round(random.uniform(0.0, 0.5), 1)
-        j_need = round(random.uniform(0.0, 0.5), 1)
+    for i in range(6):
+        d_need = round(random.uniform(0.0, 1.0), 1)
+        j_need = round(random.uniform(0.0, 1.0), 1)
         needs.append([d_need, j_need])
 
     chosen = wisdom(strategies, needs, prices, profits)
     print(chosen)
+    print("this is NEEDS:", needs)
 
 
 
