@@ -17,6 +17,7 @@ def wisdom(strategies, needs, prices, profits):
     d_probs = []
     j_probs = []
     the_str = []
+    prob = []
 
     for ge in needs:
         d_needs.append(ge[0])
@@ -42,8 +43,20 @@ def wisdom(strategies, needs, prices, profits):
                 P_M[i][j] = (_p[1] * j_prft[0] + (_a[1] - _p[1]) * j_prft[1]) + _a[0] * d_prft[0]
             elif _a[0] > _p[0] and _a[1] > _p[1]:
                 P_M[i][j] = (_p[1] * j_prft[0] + (_a[1] - _p[1]) * j_prft[1]) + (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[1])
+            elif _a[0] < _p[0] and _a[1] == _p[1]:
+                P_M[i][j] = (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[2]) + _a[1] * j_prft[0]
+            elif _a[0] == _p[0] and _a[1] < _p[1]:
+                P_M[i][j] = _a[0] * d_prft[0] + (_p[1] * j_prft[0] + (_a[1] - _p[1]) * j_prft[2])
+            elif _a[0] < _p[0] and _a[1] < _p[1]:
+                P_M[i][j] = (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[2]) + (_p[1] * j_prft[0] + (_a[1] - _p[1]) * j_prft[2])
+            # Мне реально стыдно на этом моменте.
+            elif _a[0] > _p[0] and _a[1] < _p[1]:
+                P_M[i][j] = (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[1]) + (_p[1] * j_prft[0] + (_a[1] - _p[1]) * j_prft[2])
+            elif _a[0] < _p[0] and _a[1] > _p[1]:
+                P_M[i][j] = (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[2]) + (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[1])
             else:
-                P_M[i][j] = 2  # P_M[i][j] = _a * prices[1] + (_p - _a) * prices[2]
+                print("that should not happen")  # P_M[i][j] = _a * prices[1] + (_p - _a) * prices[2]
+                print(_a, _p)
 
     # And now for something completely different. The possibilities
     d_needs = sorted(d_needs)
@@ -74,6 +87,10 @@ def wisdom(strategies, needs, prices, profits):
     the_str.append(j_probs.index(max(j_probs)))
     print(the_str)
 
+    for i in range(len(needlist)):
+        prob.append((d_probs[needlist[i][0]] + j_probs[needlist[i][1]]) / 2)
+    print(prob)
+    print(needlist[prob.index(max(prob))])
 
     # Это не нужно и будет удалено (возможно)
     ''' for client in needs:
