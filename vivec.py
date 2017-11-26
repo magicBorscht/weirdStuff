@@ -92,6 +92,8 @@ def wisdom(strategies, needs, prices, profits):
     print(prob)
     print(needlist[prob.index(max(prob))])
 
+    # А теперь для каждой стратегии надо помножить вероятность на возможный выигрыш
+
     # Это не нужно и будет удалено (возможно)
     ''' for client in needs:
         d_avg += client[0]
