@@ -7,19 +7,22 @@ cash = 100
 # Покупка действительно будет дешевле при наличии уже имеющихся предметов.
 # Я пошёл пить кофе.
 
-def eqq(a, profit):
-    return a * profit[0]
+
+def eqq(a, profit, c):
+    return a * profit[0] + (c * 4)
 
 
-def moar(a, b, profit):
-    return b * profit[0] + (a - b) * profit[1]
+def moar(a, b, profit, c):
+    return (b + c) * profit[0] + (a - (b + c)) * profit[1]
 
 
-def less(a, b, profit):
-    return b * profit[0] + (a - b) * profit[2]
+def less(a, b, profit, c):
+    return (b + c) * profit[0] + (a - (b + c)) * profit[2]
 
 
 def wisdom(strategies, needs, prices, profits):
+    global d_count
+    global j_count
     d_avg = 0
     j_avg = 0
     needlist = []
@@ -49,36 +52,37 @@ def wisdom(strategies, needs, prices, profits):
     for i, _a in enumerate(strategies):
         P_M[i] = {}
         for j, _p in enumerate(needlist):
-            if _a == _p:
-                P_M[i][j] = eqq(_a[0], d_prft) + eqq(_a[1], j_prft)
+            if _a[0] + d_count == _p[0] and _a[1] + j_count == _p[1]:
+                P_M[i][j] = eqq(_a[0], d_prft, d_count) + eqq(_a[1], j_prft, j_count)
 
-            elif _a[0] > _p[0] and _a[1] == _p[1]:
-                P_M[i][j] = moar(_a[0], _p[0], d_prft) + eqq(_a[1], j_prft)
+            elif _a[0] + d_count > _p[0] and _a[1] + j_count == _p[1]:
+                P_M[i][j] = moar(_a[0], _p[0], d_prft, d_count) + eqq(_a[1], j_prft, j_count)
                 # p * prices[1] + (_a - _p) * prices[0]
-            elif _a[0] == _p[0] and _a[1] > _p[1]:
-                P_M[i][j] = eqq(_a[0], d_prft) + moar(_a[1], _p[1], j_prft)
+            elif _a[0] + d_count == _p[0] and _a[1] + j_count > _p[1]:
+                P_M[i][j] = eqq(_a[0], d_prft, d_count) + moar(_a[1], _p[1], j_prft, j_count)
 
-            elif _a[0] > _p[0] and _a[1] > _p[1]:
-                P_M[i][j] = moar(_a[0], _p[0], d_prft) + moar(_a[1], _p[1], j_prft)
+            elif _a[0] + d_count > _p[0] and _a[1] + j_count > _p[1]:
+                P_M[i][j] = moar(_a[0], _p[0], d_prft, d_count) + moar(_a[1], _p[1], j_prft, j_count)
 
-            elif _a[0] < _p[0] and _a[1] == _p[1]:
-                P_M[i][j] = less(_a[0], _p[0], d_prft) + eqq(_a[1], j_prft)
+            elif _a[0] + d_count < _p[0] and _a[1] + j_count == _p[1]:
+                P_M[i][j] = less(_a[0], _p[0], d_prft, d_count) + eqq(_a[1], j_prft, j_count)
 
-            elif _a[0] == _p[0] and _a[1] < _p[1]:
-                P_M[i][j] = eqq(_a[0], d_prft) + less(_a[1], _p[1], j_prft)
+            elif _a[0] + d_count == _p[0] and _a[1] + j_count < _p[1]:
+                P_M[i][j] = eqq(_a[0], d_prft, d_count) + less(_a[1], _p[1], j_prft, j_count)
 
-            elif _a[0] < _p[0] and _a[1] < _p[1]:
-                P_M[i][j] = less(_a[0], _p[0], d_prft) + less(_a[1], _p[1], j_prft)
+            elif _a[0] + d_count < _p[0] and _a[1] + j_count < _p[1]:
+                P_M[i][j] = less(_a[0], _p[0], d_prft, d_count) + less(_a[1], _p[1], j_prft, j_count)
             # Мне реально стыдно на этом моменте.
-            elif _a[0] > _p[0] and _a[1] < _p[1]:
-                P_M[i][j] = moar(_a[0], _p[0], d_prft) + less(_a[1], _p[1], j_prft)
+            elif _a[0] + d_count > _p[0] and _a[1] + j_count < _p[1]:
+                P_M[i][j] = moar(_a[0], _p[0], d_prft, d_count) + less(_a[1], _p[1], j_prft, j_count)
 
-            elif _a[0] < _p[0] and _a[1] > _p[1]:
-                P_M[i][j] = less(_a[0], _p[0], d_prft) + moar(_a[1], _p[1], j_prft)
+            elif _a[0] + d_count < _p[0] and _a[1] + j_count > _p[1]:
+                P_M[i][j] = less(_a[0], _p[0], d_prft, d_count) + moar(_a[1], _p[1], j_prft, j_count)
             else:
                 print("that should not happen")  # P_M[i][j] = _a * prices[1] + (_p - _a) * prices[2]
                 print(_a, _p)
-
+    for k in P_M.keys():
+        print(P_M[k])
     # And now for something completely different. The possibilities
     d_needs = sorted(d_needs)
     j_needs = sorted(j_needs)
@@ -160,7 +164,6 @@ def move():
     chosen = wisdom(strategies, needs, prices, profits)
     print(chosen)
     print("this is NEEDS:", needs)
-
 
 
 move()
