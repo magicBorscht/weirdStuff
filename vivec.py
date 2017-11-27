@@ -3,6 +3,20 @@ import random
 d_count = 0
 j_count = 0
 cash = 100
+# Каким-то образом надо учесть в формулах ниже кол-во барахла на складе.
+# Покупка действительно будет дешевле при наличии уже имеющихся предметов.
+# Я пошёл пить кофе.
+
+def eqq(a, profit):
+    return a * profit[0]
+
+
+def moar(a, b, profit):
+    return b * profit[0] + (a - b) * profit[1]
+
+
+def less(a, b, profit):
+    return b * profit[0] + (a - b) * profit[2]
 
 
 def wisdom(strategies, needs, prices, profits):
@@ -10,8 +24,8 @@ def wisdom(strategies, needs, prices, profits):
     j_avg = 0
     needlist = []
     P_M = {}
-    d_prft = [7, -5, -10]
-    j_prft = [2, -1, -5]
+    d_prft = [7, -15, -10]
+    j_prft = [2, -4, -5]
     d_needs = []
     j_needs = []
     d_probs = []
@@ -36,24 +50,31 @@ def wisdom(strategies, needs, prices, profits):
         P_M[i] = {}
         for j, _p in enumerate(needlist):
             if _a == _p:
-                P_M[i][j] = _a[0] * d_prft[0] + _a[1] * j_prft[0]
+                P_M[i][j] = eqq(_a[0], d_prft) + eqq(_a[1], j_prft)
+
             elif _a[0] > _p[0] and _a[1] == _p[1]:
-                P_M[i][j] = (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[1]) + _a[1] * j_prft[0]  # p * prices[1] + (_a - _p) * prices[0]
+                P_M[i][j] = moar(_a[0], _p[0], d_prft) + eqq(_a[1], j_prft)
+                # p * prices[1] + (_a - _p) * prices[0]
             elif _a[0] == _p[0] and _a[1] > _p[1]:
-                P_M[i][j] = (_p[1] * j_prft[0] + (_a[1] - _p[1]) * j_prft[1]) + _a[0] * d_prft[0]
+                P_M[i][j] = eqq(_a[0], d_prft) + moar(_a[1], _p[1], j_prft)
+
             elif _a[0] > _p[0] and _a[1] > _p[1]:
-                P_M[i][j] = (_p[1] * j_prft[0] + (_a[1] - _p[1]) * j_prft[1]) + (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[1])
+                P_M[i][j] = moar(_a[0], _p[0], d_prft) + moar(_a[1], _p[1], j_prft)
+
             elif _a[0] < _p[0] and _a[1] == _p[1]:
-                P_M[i][j] = (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[2]) + _a[1] * j_prft[0]
+                P_M[i][j] = less(_a[0], _p[0], d_prft) + eqq(_a[1], j_prft)
+
             elif _a[0] == _p[0] and _a[1] < _p[1]:
-                P_M[i][j] = _a[0] * d_prft[0] + (_p[1] * j_prft[0] + (_a[1] - _p[1]) * j_prft[2])
+                P_M[i][j] = eqq(_a[0], d_prft) + less(_a[1], _p[1], j_prft)
+
             elif _a[0] < _p[0] and _a[1] < _p[1]:
-                P_M[i][j] = (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[2]) + (_p[1] * j_prft[0] + (_a[1] - _p[1]) * j_prft[2])
+                P_M[i][j] = less(_a[0], _p[0], d_prft) + less(_a[1], _p[1], j_prft)
             # Мне реально стыдно на этом моменте.
             elif _a[0] > _p[0] and _a[1] < _p[1]:
-                P_M[i][j] = (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[1]) + (_p[1] * j_prft[0] + (_a[1] - _p[1]) * j_prft[2])
+                P_M[i][j] = moar(_a[0], _p[0], d_prft) + less(_a[1], _p[1], j_prft)
+
             elif _a[0] < _p[0] and _a[1] > _p[1]:
-                P_M[i][j] = (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[2]) + (_p[0] * d_prft[0] + (_a[0] - _p[0]) * d_prft[1])
+                P_M[i][j] = less(_a[0], _p[0], d_prft) + moar(_a[1], _p[1], j_prft)
             else:
                 print("that should not happen")  # P_M[i][j] = _a * prices[1] + (_p - _a) * prices[2]
                 print(_a, _p)
