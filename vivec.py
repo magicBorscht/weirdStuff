@@ -95,7 +95,7 @@ def wisdom(strategies, needs, prices, profits):
                 res.append(d_needs[k])
         d_probs.append(sum(res) / 6)
     d_probs.append(sum(d_needs) / 6)
-    print("d_probs =", d_probs)
+    # print("d_probs =", d_probs)
     the_str.append(d_probs.index(max(d_probs)))
 
     for i in reversed(range(5)):
@@ -107,13 +107,13 @@ def wisdom(strategies, needs, prices, profits):
                 res.append(j_needs[k])
         j_probs.append(sum(res) / 6)
     j_probs.append(sum(j_needs) / 6)
-    print("j_probs =", j_probs)
+    # print("j_probs =", j_probs)
     the_str.append(j_probs.index(max(j_probs)))
     print(the_str)
 
     for i in range(len(needlist)):
         prob.append((d_probs[needlist[i][0]] + j_probs[needlist[i][1]]) / 2)
-    print(prob)
+
     print(needlist[prob.index(max(prob))])
     b_i = []
     a_i = []
@@ -124,7 +124,7 @@ def wisdom(strategies, needs, prices, profits):
         _b_i = 0
         for i, b in enumerate(buf):
             _b_i += b * prob[i]
-        # print(_b_i)
+        print(_b_i)
         b_i.append(_b_i)
     K_i = max(a_i)
     answer = a_i.index(K_i)
@@ -157,10 +157,10 @@ def wisdom(strategies, needs, prices, profits):
     ares = r_i.index(rres) + 1
     cntres = r_i.count(rres)
 
-    '''if cntres > 1:
+    if cntres > 1:
         print("минимальный риск составляет {} в {} стратегиях, например, {}".format(rres, cntres, ares))
     else:
-        print("минимальный риск составляет {} в стратегии №{}".format(rres, ares))'''
+        print("минимальный риск составляет {} в стратегии №{}".format(rres, ares))
 
     beta = []
     d = 0.2
