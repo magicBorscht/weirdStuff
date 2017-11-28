@@ -17,7 +17,7 @@ def moar(a, b, profit, c):
 
 
 def less(a, b, profit, c):
-    return (b + c) * profit[0] + (a - (b + c)) * profit[2]
+    return (b + c) * profit[0] + ((b + c) - a) * profit[2]
 
 
 def wisdom(strategies, needs, prices, profits):
@@ -81,8 +81,10 @@ def wisdom(strategies, needs, prices, profits):
             else:
                 print("that should not happen")  # P_M[i][j] = _a * prices[1] + (_p - _a) * prices[2]
                 print(_a, _p)
+    i = 0
     for k in P_M.keys():
-        print(P_M[k])
+        print(i, P_M[k])
+        i += 1
     # And now for something completely different. The possibilities
     d_needs = sorted(d_needs)
     j_needs = sorted(j_needs)
