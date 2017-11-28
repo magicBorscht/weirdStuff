@@ -23,8 +23,6 @@ def less(a, b, profit, c):
 def wisdom(strategies, needs, prices, profits):
     global d_count
     global j_count
-    d_avg = 0
-    j_avg = 0
     needlist = []
     P_M = {}
     d_prft = [7, -15, -10]
@@ -35,6 +33,7 @@ def wisdom(strategies, needs, prices, profits):
     j_probs = []
     the_str = []
     prob = []
+    beta = []
 
     for ge in needs:
         d_needs.append(ge[0])
@@ -81,11 +80,9 @@ def wisdom(strategies, needs, prices, profits):
             else:
                 print("that should not happen")  # P_M[i][j] = _a * prices[1] + (_p - _a) * prices[2]
                 print(_a, _p)
-    i = 0
-    for k in P_M.keys():
-        print(i, P_M[k])
-        i += 1
+
     # And now for something completely different. The possibilities
+
     d_needs = sorted(d_needs)
     j_needs = sorted(j_needs)
 
@@ -118,8 +115,77 @@ def wisdom(strategies, needs, prices, profits):
         prob.append((d_probs[needlist[i][0]] + j_probs[needlist[i][1]]) / 2)
     print(prob)
     print(needlist[prob.index(max(prob))])
+    b_i = []
+    a_i = []
+    for line in P_M.values():
+        buf = list(line.values())
+        # print(buf)
+        a_i.append(min(buf))
+        _b_i = 0
+        for i, b in enumerate(buf):
+            _b_i += b * prob[i]
+        # print(_b_i)
+        b_i.append(_b_i)
+    K_i = max(a_i)
+    answer = a_i.index(K_i)
+    print('пыщь' * 20)
+    print(K_i, answer + 1)
+    print("blbl" * 20)
+    print(" ")
 
-    # А теперь для каждой стратегии надо помножить вероятность на возможный выигрыш
+    b_i_j = [list(element.values()) for element in P_M.values()]
+
+    _tmp = list(zip(*b_i_j))
+
+    for column in _tmp:
+        beta.append(max(column))
+
+    r_i_j = []
+
+    b_i_j_t = list(zip(*b_i_j))
+
+    for i, row in enumerate(b_i_j_t):
+        r_i_j.append([])
+        for b in row:
+            r_i_j[i].append(beta[i] - b)
+
+    r_i_j = list(zip(*r_i_j))
+
+    r_i = [max(row) for row in r_i_j]
+
+    rres = min(r_i)
+    ares = r_i.index(rres) + 1
+    cntres = r_i.count(rres)
+
+    '''if cntres > 1:
+        print("минимальный риск составляет {} в {} стратегиях, например, {}".format(rres, cntres, ares))
+    else:
+        print("минимальный риск составляет {} в стратегии №{}".format(rres, ares))'''
+
+    beta = []
+    d = 0.2
+
+    _tmp = list(zip(*b_i_j))
+
+    k_III = []
+
+    left = []
+
+    for column in _tmp:
+        k_III.append(d * min(column) + (1 - d) * max(column))
+
+    K_III = max(k_III)
+
+    aresIII = k_III.index(K_III) + 1
+    cntresIII = k_III.count(K_III)
+
+    '''if cntresIII > 1:
+        print("K III составляет {} в {} стратегиях, например, {} при коэффициенте {}".format(K_III, cntresIII, aresIII,
+                                                                                             d))
+    else:
+        print("K III составляет {} в стратегии №{} при коэффициенте {}".format(K_III, aresIII, d))
+
+    # А теперь для каждой стратегии надо помножить вероятность на возможный выигрыш'''
 
     # Это не нужно и будет удалено (возможно)
     ''' for client in needs:
@@ -141,8 +207,8 @@ def wisdom(strategies, needs, prices, profits):
 
 def move():
     global cash
-    global dispcount
-    global jackcount
+    global d_count
+    global j_count
 
     if cash <= 4:
         return 'You lose'
