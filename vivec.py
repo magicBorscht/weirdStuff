@@ -27,8 +27,8 @@ def wisdom(strategies, needs, prices, profits):
     global j_count
     needlist = []
     P_M = {}
-    d_prft = [7, -15, -10]
-    j_prft = [2, -4, -5]
+    d_prft = [7, -22, -7]
+    j_prft = [2, -8, -4]
     d_needs = []
     j_needs = []
     d_probs = []
@@ -119,32 +119,22 @@ def wisdom(strategies, needs, prices, profits):
 
     # print(needlist[prob.index(max(prob))])
     b_i = []
-    a_i = []
+    i = 0
     for line in P_M.values():
         buf = list(line.values())
+        print(max(buf)* prob[i])
+        i += 1
+        b_i.append(max(buf)* prob[i])
         _b_i = 0
-        for i, b in enumerate(buf):
+        '''for i, b in enumerate(buf):
             _b_i += b * prob[i]
-        b_i.append(_b_i)
+        b_i.append(_b_i)'''
     ge = 12  # P_M[the_str[0] * the_str[1] - 1][the_str[0] * the_str[1] - 1]
     print("ВНИМАНИЕ! ГЕ: ", ge)
-
-    # Это не нужно и будет удалено (возможно)
-    ''' for client in needs:
-        d_avg += client[0]
-        j_avg += client[1]
-
-    d_avg = d_avg / 5
-    j_avg = j_avg / 5
-    print(d_avg, j_avg)
-
-    varg = []
-    for strtg in strategies:
-        kek = ((d_avg * profits[0] * strtg[0]) + (j_avg * profits[1]) * strtg[1]) - ((d_avg * prices[0] * strtg[0]) + (j_avg * prices[1]) * strtg[1])
-        varg.append(kek)
-    print('varg = ', varg)
-    return varg.index(max(varg)) '''
+    # the_str[0] = 100
+    # the_str[1] = 100
     return the_str
+
 
 def zakup(strtg):
     global d_count
@@ -170,6 +160,7 @@ def zakup(strtg):
         cash -= 4
         sauce[1] += 1
     print("Приобретено {} дисплеев и {} джеков, теперь их {} и {}".format(sauce[0], sauce[1], d_count, j_count))
+    print("В кассе теперь ", cash, " чего бы то ни было")
 
 
 def repair(customers):
@@ -182,7 +173,7 @@ def repair(customers):
             cash += 22
             print("Починен дисплей, получено 22 чего бы то ни было")
         elif person[0] == 1 and d_count == 0:
-            cash -= 10
+            cash -= 7
             print("Не починен дисплей, репутация ПАДАЕТ!")
 
         if person[1] == 1 and j_count > 0:
@@ -190,7 +181,7 @@ def repair(customers):
             cash += 6
             print("Починен джек, получено 6 чего бы то ни было")
         elif person[1] == 1 and j_count == 0:
-            cash -= 5
+            cash -= 4
             print("Не починен джек, репутация ПАДАЕТ!")
 
     if cash < 0:
@@ -224,14 +215,18 @@ def move():
     for k in needs:
         customers.append([numpy.random.choice([0, 1], p=[k[0], 1 - k[0]]),
                           numpy.random.choice([0, 1], p=[k[1], 1 - k[1]])])
-    # print(customers)
+    print(customers)
     repair(customers)
-    print("Денег в кассе: {}, выручка за день: {}".format(cash, cash - old_cash))
     print("К концу дня на складе {} дисплеев и {} джеков".format(d_count, j_count))
+    print("Оплата хранения: {}".format((7 * d_count) + (j_count * 4)))
+    cash -= (7 * d_count) + 4 * j_count
+    if cash < 0:
+        cash = 0
+    print("Денег в кассе: {}, выручка за день: {}".format(cash, cash - old_cash))
     print('\n', '=' * 40, '\n')
     old_cash = cash
 
-for i in range(100):
+for i in range(1):
     if cash < 4 and j_count == 0 and d_count == 0:
         print("Проиграл за {} дней".format(i))
         break
