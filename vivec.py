@@ -3,8 +3,8 @@ import numpy
 
 d_count = 0
 j_count = 0
-cash = 100
-old_cash = 100
+cash = 1000
+old_cash = 1000
 # Каким-то образом надо учесть в формулах ниже кол-во барахла на складе.
 # Покупка действительно будет дешевле при наличии уже имеющихся предметов.
 # Я пошёл пить кофе.
@@ -27,8 +27,8 @@ def wisdom(strategies, needs, prices, profits):
     global j_count
     needlist = []
     P_M = {}
-    d_prft = [7, -9, -6]
-    j_prft = [2, -7, -4]
+    d_prft = [70, -90, -60]
+    j_prft = [20, -70, -40]
     d_needs = []
     j_needs = []
     d_probs = []
@@ -138,9 +138,12 @@ def wisdom(strategies, needs, prices, profits):
 
     # P_M[the_str[0] * the_str[1] - 1][the_str[0] * the_str[1] - 1]
     print("ВНИМАНИЕ! ГЕ: ", strategies[ge])
+    print("Вероятный профит:", b_i[ge])
     print("Но наиболее вероятное развитие событий:", the_str)
-    # strategies[ge][0] = 5
-    # strategies[ge][1] = 5
+    print("Вероятный профит:", b_i[strategies.index(the_str)])
+    print("Вероятный профит от [3, 3]:", b_i[strategies.index([3, 3])])
+    # strategies[ge][0] = 3
+    # strategies[ge][1] = 3
 
     return strategies[ge]
 
@@ -158,7 +161,7 @@ def zakup(strtg):
             print("Сперва прикупи себе денег")
             break
         d_count += 1
-        cash -= 15
+        cash -= 150
         sauce[0] += 1
 
     for i in range(gege, strtg[1]):
@@ -166,7 +169,7 @@ def zakup(strtg):
             print("Даже джек купить не можешь")
             break
         j_count += 1
-        cash -= 4
+        cash -= 40
         sauce[1] += 1
     print("Приобретено {} дисплеев и {} джеков, теперь их {} и {}".format(sauce[0], sauce[1], d_count, j_count))
     print("В кассе теперь ", cash, " чего бы то ни было")
@@ -179,18 +182,18 @@ def repair(customers):
     for person in customers:
         if person[0] == 1 and d_count > 0:
             d_count -= 1
-            cash += 22
+            cash += 220
             print("Починен дисплей, получено 22 чего бы то ни было")
         elif person[0] == 1 and d_count == 0:
-            cash -= 5
+            cash -= 50
             print("Не починен дисплей, репутация ПАДАЕТ!")
 
         if person[1] == 1 and j_count > 0:
             j_count -= 1
-            cash += 6
+            cash += 60
             print("Починен джек, получено 6 чего бы то ни было")
         elif person[1] == 1 and j_count == 0:
-            cash -= 4
+            cash -= 40
             print("Не починен джек, репутация ПАДАЕТ!")
 
     if cash < 0:
@@ -227,8 +230,8 @@ def move():
     print(customers)
     repair(customers)
     print("К концу дня на складе {} дисплеев и {} джеков".format(d_count, j_count))
-    print("Оплата хранения: {}".format((10 * d_count) + (j_count * 8)))
-    cash -= 9 * d_count + 7 * j_count
+    print("Оплата хранения: {}".format((90 * d_count) + (j_count * 70)))
+    cash -= 90 * d_count + 70 * j_count
     if cash < 0:
         cash = 0
     print("Денег в кассе: {}, выручка за день: {}".format(cash, cash - old_cash))
@@ -236,7 +239,7 @@ def move():
     old_cash = cash
 
 for i in range(1000):
-    if cash < 4 and j_count == 0 and d_count == 0:
+    if cash < 40 and j_count == 0 and d_count == 0:
         print("Проиграл за {} дней".format(i))
         break
     move()
