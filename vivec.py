@@ -5,10 +5,14 @@ d_count = 0
 j_count = 0
 cash = 1000
 old_cash = 1000
-d_gl_profits = (210, -40, -10, 220)
-j_gl_profits = (50, -25, -10, 60)
+d_gl_profits = (200, -60, -10, 220)
+j_gl_profits = (40, -50, -10, 60)
 d_sale_price = 220
 j_sale_price = 60
+
+switcher = 0
+raz = 3
+dva = 3
 
 # Каким-то образом надо учесть в формулах ниже кол-во барахла на складе.
 # Покупка действительно будет дешевле при наличии уже имеющихся предметов.
@@ -107,19 +111,19 @@ def wisdom(strategies, needs):
 
     for i in reversed(range(5)):
         res = []
-        for k in range(6):
+        for k in range(5):
             if k <= i:
                 res.append(1 - d_needs[k])
             else:
                 res.append(d_needs[k])
         d_probs.append(sum(res) / 6)
     d_probs.append(sum(d_needs) / 6)
-    # print("d_probs =", d_probs)
+    print("d_probs =", d_probs)
     the_str.append(d_probs.index(max(d_probs)))
 
     for i in reversed(range(5)):
         res = []
-        for k in range(6):
+        for k in range(5):
             if k <= i:
                 res.append(1 - j_needs[k])
             else:
@@ -158,8 +162,13 @@ def wisdom(strategies, needs):
     print("Но наиболее вероятное развитие событий:", the_str)
     print("Вероятный профит:", b_i[strategies.index(the_str)])
     print("Вероятный профит от [3, 3]:", b_i[strategies.index([3, 3])])
-    # strategies[ge][0] = 5
-    # strategies[ge][1] = 5
+
+    global switcher
+    global raz
+    global dva
+    if switcher == 1:
+        strategies[ge][0] = raz
+        strategies[ge][1] = dva
 
     return strategies[ge]
 
@@ -243,22 +252,23 @@ def move():
         for j in range(6):
             strategies.append([i, j])
 
-    for i in range(6):
+    for i in range(5):
         d_need = round(random.uniform(0.0, 1.0), 1)
         j_need = round(random.uniform(0.0, 1.0), 1)
         needs.append([d_need, j_need])
 
+    print("these are NEEDS:", needs)
     chosen = wisdom(strategies, needs)
     # print(chosen)
-    # print("these are NEEDS:", needs)
+
     zakup(chosen)
     for k in needs:
-        customers.append([numpy.random.choice([0, 1], p=[k[0], 1 - k[0]]),
-                          numpy.random.choice([0, 1], p=[k[1], 1 - k[1]])])
+        customers.append([numpy.random.choice([0, 1], p=[1 - k[0], k[0]]),
+                          numpy.random.choice([0, 1], p=[1 - k[1], k[1]])])
     print(customers)
     repair(customers)
     print("К концу дня на складе {} дисплеев и {} джеков".format(d_count, j_count))
-    pay = -(d_gl_profits[1] * d_count) + (j_count * j_gl_profits[1])
+    pay = -((d_gl_profits[1] * d_count) + (j_gl_profits[1] * j_count))
     print("Оплата хранения: {}".format(pay))
     cash -= pay
     if cash < 0:
