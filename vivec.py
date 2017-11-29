@@ -27,8 +27,8 @@ def wisdom(strategies, needs, prices, profits):
     global j_count
     needlist = []
     P_M = {}
-    d_prft = [7, -9, -100]
-    j_prft = [2, -7, -100]
+    d_prft = [7, -9, -6]
+    j_prft = [2, -7, -4]
     d_needs = []
     j_needs = []
     d_probs = []
@@ -139,8 +139,8 @@ def wisdom(strategies, needs, prices, profits):
     # P_M[the_str[0] * the_str[1] - 1][the_str[0] * the_str[1] - 1]
     print("ВНИМАНИЕ! ГЕ: ", strategies[ge])
     print("Но наиболее вероятное развитие событий:", the_str)
-    strategies[ge][0] = 5
-    strategies[ge][1] = 5
+    # strategies[ge][0] = 5
+    # strategies[ge][1] = 5
 
     return strategies[ge]
 
@@ -182,7 +182,7 @@ def repair(customers):
             cash += 22
             print("Починен дисплей, получено 22 чего бы то ни было")
         elif person[0] == 1 and d_count == 0:
-            cash -= 12
+            cash -= 5
             print("Не починен дисплей, репутация ПАДАЕТ!")
 
         if person[1] == 1 and j_count > 0:
@@ -190,7 +190,7 @@ def repair(customers):
             cash += 6
             print("Починен джек, получено 6 чего бы то ни было")
         elif person[1] == 1 and j_count == 0:
-            cash -= 10
+            cash -= 4
             print("Не починен джек, репутация ПАДАЕТ!")
 
     if cash < 0:
