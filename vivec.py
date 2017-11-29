@@ -5,6 +5,11 @@ d_count = 0
 j_count = 0
 cash = 1000
 old_cash = 1000
+d_gl_profits = (210, -40, -10, 220)
+j_gl_profits = (50, -25, -10, 60)
+d_sale_price = 220
+j_sale_price = 60
+
 # Каким-то образом надо учесть в формулах ниже кол-во барахла на складе.
 # Покупка действительно будет дешевле при наличии уже имеющихся предметов.
 # Я пошёл пить кофе.
@@ -27,8 +32,18 @@ def wisdom(strategies, needs):
     global j_count
     needlist = []
     P_M = {}
-    d_prft = [70, -30, -50, 220]
-    j_prft = [20, -22, -40, 60]
+    global d_gl_profits
+    global j_gl_profits
+    global d_sale_price
+    global j_sale_price
+    # d_prft = [70, -40, -67, 220]
+    # j_prft = [20, -25, -45, 60]
+    d_prft = list(d_gl_profits)
+    j_prft = list(j_gl_profits)
+    d_prft[0] = d_sale_price - d_prft[0]
+    j_prft[0] = j_sale_price - j_prft[0]
+    print(d_prft)
+    print(j_prft)
     d_needs = []
     j_needs = []
     d_probs = []
@@ -143,8 +158,8 @@ def wisdom(strategies, needs):
     print("Но наиболее вероятное развитие событий:", the_str)
     print("Вероятный профит:", b_i[strategies.index(the_str)])
     print("Вероятный профит от [3, 3]:", b_i[strategies.index([3, 3])])
-    # strategies[ge][0] = 3
-    # strategies[ge][1] = 3
+    # strategies[ge][0] = 5
+    # strategies[ge][1] = 5
 
     return strategies[ge]
 
@@ -153,24 +168,28 @@ def zakup(strtg):
     global d_count
     global j_count
     global cash
+    global d_gl_profits
+    global j_gl_profits
+    global d_sale_price
+    global j_sale_price
     ge = d_count
     gege = j_count
     sauce = [0, 0]
 
     for i in range(ge, strtg[0]):
-        if cash < 15:
+        if cash < d_gl_profits[0]:
             print("Сперва прикупи себе денег")
             break
         d_count += 1
-        cash -= 150
+        cash -= d_gl_profits[0]
         sauce[0] += 1
 
     for i in range(gege, strtg[1]):
-        if cash < 4:
+        if cash < j_gl_profits[0]:
             print("Даже джек купить не можешь")
             break
         j_count += 1
-        cash -= 40
+        cash -= j_gl_profits[0]
         sauce[1] += 1
     print("Приобретено {} дисплеев и {} джеков, теперь их {} и {}".format(sauce[0], sauce[1], d_count, j_count))
     print("В кассе теперь ", cash, " чего бы то ни было")
@@ -180,35 +199,43 @@ def repair(customers):
     global cash
     global j_count
     global d_count
+    global d_gl_profits
+    global j_gl_profits
+    global d_sale_price
+    global j_sale_price
+
     for person in customers:
         if person[0] == 1 and d_count > 0:
             d_count -= 1
-            cash += 220
-            print("Починен дисплей, получено 220 чего бы то ни было")
+            cash += d_sale_price
+            print("Починен дисплей, получено {} чего бы то ни было".format(d_sale_price))
         elif person[0] == 1 and d_count == 0:
-            cash -= 50
+            cash += d_gl_profits[2]
             print("Не починен дисплей, репутация ПАДАЕТ!")
 
         if person[1] == 1 and j_count > 0:
             j_count -= 1
-            cash += 60
-            print("Починен джек, получено 60 чего бы то ни было")
+            cash += j_sale_price
+            print("Починен джек, получено {} чего бы то ни было".format(j_sale_price))
         elif person[1] == 1 and j_count == 0:
-            cash -= 40
+            cash += j_gl_profits[2]
             print("Не починен джек, репутация ПАДАЕТ!")
 
     if cash < 0:
         cash = 0
+
 
 def move():
     global cash
     global d_count
     global j_count
     global old_cash
+    global d_gl_profits
+    global j_gl_profits
+    global d_sale_price
+    global j_sale_price
 
     customers = []
-    prices = [15, 4]
-    profits = [22, 6]
     strategies = []
     needs = []
 
@@ -231,13 +258,15 @@ def move():
     print(customers)
     repair(customers)
     print("К концу дня на складе {} дисплеев и {} джеков".format(d_count, j_count))
-    print("Оплата хранения: {}".format((30 * d_count) + (j_count * 22)))
-    cash -= 30 * d_count + 22 * j_count
+    pay = -(d_gl_profits[1] * d_count) + (j_count * j_gl_profits[1])
+    print("Оплата хранения: {}".format(pay))
+    cash -= pay
     if cash < 0:
         cash = 0
     print("Денег в кассе: {}, выручка за день: {}".format(cash, cash - old_cash))
     print('\n', '=' * 40, '\n')
     old_cash = cash
+
 
 for i in range(1000):
     if cash < 40 and j_count == 0 and d_count == 0:
