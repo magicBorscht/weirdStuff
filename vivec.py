@@ -5,14 +5,16 @@ d_count = 0
 j_count = 0
 cash = 1000
 old_cash = 1000
-d_gl_profits = (200, -60, -10, 220)
-j_gl_profits = (40, -50, -10, 60)
-d_sale_price = 220
+d_gl_profits = (220, -50, -60, 220)
+j_gl_profits = (40, -42, -50, 60)
+d_sale_price = 250
 j_sale_price = 60
 
-switcher = 0
+switcher = 1
 raz = 3
 dva = 3
+
+i_am_lazy = 1000
 
 # Каким-то образом надо учесть в формулах ниже кол-во барахла на складе.
 # Покупка действительно будет дешевле при наличии уже имеющихся предметов.
@@ -46,8 +48,7 @@ def wisdom(strategies, needs):
     j_prft = list(j_gl_profits)
     d_prft[0] = d_sale_price - d_prft[0]
     j_prft[0] = j_sale_price - j_prft[0]
-    print(d_prft)
-    print(j_prft)
+
     d_needs = []
     j_needs = []
     d_probs = []
@@ -109,6 +110,7 @@ def wisdom(strategies, needs):
     d_needs = sorted(d_needs)
     j_needs = sorted(j_needs)
 
+
     for i in reversed(range(5)):
         res = []
         for k in range(5):
@@ -118,7 +120,7 @@ def wisdom(strategies, needs):
                 res.append(d_needs[k])
         d_probs.append(sum(res) / 6)
     d_probs.append(sum(d_needs) / 6)
-    print("d_probs =", d_probs)
+    # print("d_probs =", d_probs)
     the_str.append(d_probs.index(max(d_probs)))
 
     for i in reversed(range(5)):
@@ -133,10 +135,12 @@ def wisdom(strategies, needs):
     # print("j_probs =", j_probs)
     the_str.append(j_probs.index(max(j_probs)))
 
+
     # print(the_str)
 
     for i in range(len(needlist)):
-        prob.append((d_probs[needlist[i][0]] + j_probs[needlist[i][1]]) / 2)
+        prob.append((d_probs[needlist[i][0]] + j_probs[needlist[i][1]]) / 40)
+    print(sum(prob))
 
     # print(needlist[prob.index(max(prob))])
     b_i = []
@@ -155,8 +159,6 @@ def wisdom(strategies, needs):
         b_i.append(b)
     ge = b_i.index(max(b_i))
 
-
-    # P_M[the_str[0] * the_str[1] - 1][the_str[0] * the_str[1] - 1]
     print("ВНИМАНИЕ! ГЕ: ", strategies[ge])
     print("Вероятный профит:", b_i[ge])
     print("Но наиболее вероятное развитие событий:", the_str)
@@ -278,7 +280,7 @@ def move():
     old_cash = cash
 
 
-for i in range(1000):
+for i in range(i_am_lazy):
     if cash < 40 and j_count == 0 and d_count == 0:
         print("Проиграл за {} дней".format(i))
         break
