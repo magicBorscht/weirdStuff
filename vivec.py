@@ -22,7 +22,7 @@ def less(a, b, profit, c):
     return (b + c) * profit[0] + ((b + c) - a) * profit[2]
 
 
-def wisdom(strategies, needs, prices, profits):
+def wisdom(strategies, needs):
     global d_count
     global j_count
     needlist = []
@@ -220,7 +220,7 @@ def move():
         j_need = round(random.uniform(0.0, 1.0), 1)
         needs.append([d_need, j_need])
 
-    chosen = wisdom(strategies, needs, prices, profits)
+    chosen = wisdom(strategies, needs)
     # print(chosen)
     # print("these are NEEDS:", needs)
     zakup(chosen)
