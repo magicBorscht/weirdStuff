@@ -11,15 +11,15 @@ old_cash = 1000
 
 
 def eqq(a, profit, c):
-    return a * profit[0] + (c * 4)
+    return a * profit[0] + c * profit[3]
 
 
 def moar(a, b, profit, c):
-    return (b + c) * profit[0] + (a - (b + c)) * profit[1]
+    return b * profit[0] + c * profit[3] + (a - (b + c)) * profit[1]
 
 
 def less(a, b, profit, c):
-    return (b + c) * profit[0] + ((b + c) - a) * profit[2]
+    return b * profit[0] + c * profit[3] + ((b + c) - a) * profit[2]
 
 
 def wisdom(strategies, needs):
@@ -27,8 +27,8 @@ def wisdom(strategies, needs):
     global j_count
     needlist = []
     P_M = {}
-    d_prft = [70, -90, -60]
-    j_prft = [20, -70, -40]
+    d_prft = [70, -30, -50, 220]
+    j_prft = [20, -22, -40, 60]
     d_needs = []
     j_needs = []
     d_probs = []
@@ -55,7 +55,7 @@ def wisdom(strategies, needs):
         P_M[i] = {}
         for j, _p in enumerate(needlist):
             if _a[0] + d_count == _p[0] and _a[1] + j_count == _p[1]:
-                P_M[i][j] = eqq(_a[0], d_prft, d_count) + eqq(_a[1], j_prft, j_count)
+                P_M[i][j] = eqq(_a[0] + d_count, d_prft, d_count) + eqq(_a[1] + j_count, j_prft, j_count)
 
             elif _a[0] + d_count > _p[0] and _a[1] + j_count == _p[1]:
                 P_M[i][j] = moar(_a[0], _p[0], d_prft, d_count) + eqq(_a[1], j_prft, j_count)
@@ -113,6 +113,7 @@ def wisdom(strategies, needs):
     j_probs.append(sum(j_needs) / 6)
     # print("j_probs =", j_probs)
     the_str.append(j_probs.index(max(j_probs)))
+
     # print(the_str)
 
     for i in range(len(needlist)):
@@ -183,7 +184,7 @@ def repair(customers):
         if person[0] == 1 and d_count > 0:
             d_count -= 1
             cash += 220
-            print("Починен дисплей, получено 22 чего бы то ни было")
+            print("Починен дисплей, получено 220 чего бы то ни было")
         elif person[0] == 1 and d_count == 0:
             cash -= 50
             print("Не починен дисплей, репутация ПАДАЕТ!")
@@ -191,7 +192,7 @@ def repair(customers):
         if person[1] == 1 and j_count > 0:
             j_count -= 1
             cash += 60
-            print("Починен джек, получено 6 чего бы то ни было")
+            print("Починен джек, получено 60 чего бы то ни было")
         elif person[1] == 1 and j_count == 0:
             cash -= 40
             print("Не починен джек, репутация ПАДАЕТ!")
@@ -230,8 +231,8 @@ def move():
     print(customers)
     repair(customers)
     print("К концу дня на складе {} дисплеев и {} джеков".format(d_count, j_count))
-    print("Оплата хранения: {}".format((90 * d_count) + (j_count * 70)))
-    cash -= 90 * d_count + 70 * j_count
+    print("Оплата хранения: {}".format((30 * d_count) + (j_count * 22)))
+    cash -= 30 * d_count + 22 * j_count
     if cash < 0:
         cash = 0
     print("Денег в кассе: {}, выручка за день: {}".format(cash, cash - old_cash))
