@@ -15,11 +15,11 @@ lose = False
 counters = [0, 0, 0, 0, 0, 0, 0]
 # Починено мониторов, джеков, не починено мониторов, джеков, куплено мониторов, джеков, покупатели
 
-switcher = 0    # Переключение в режим тупицы, при значении 1 в качестве стратегии берутся переменные
+switcher = 1    # Переключение в режим тупицы, при значении 1 в качестве стратегии берутся переменные
 raz = 3         # raz - кол-во дисплеев и dva - кол-во джеков
 dva = 4
 
-i_am_lazy = 148822    # Количество ходов (мне было лень листать в конец файла)
+i_am_lazy = 1488    # Количество ходов (мне было лень листать в конец файла)
 
 # Каким-то образом надо учесть в формулах ниже кол-во барахла на складе.
 # Покупка действительно будет дешевле при наличии уже имеющихся предметов.
@@ -113,7 +113,7 @@ def wisdom(strategies, needs):
 
     # And now for something completely different. The possibilities
 
-    d_needs = sorted(d_needs)
+    '''d_needs = sorted(d_needs)
     j_needs = sorted(j_needs)
 
 
@@ -140,7 +140,7 @@ def wisdom(strategies, needs):
     j_probs.append(sum(j_needs) / 6)
     # print("j_probs =", j_probs)
     the_str.append(j_probs.index(max(j_probs)))
-    # print(the_str)
+    # print(the_str)'''
 
     # Я устал, это брутфорс
     d_yep = []
@@ -377,7 +377,7 @@ def move():
     for k in needs:
         customers.append([numpy.random.choice([0, 1], p=[1 - k[0], k[0]]),
                           numpy.random.choice([0, 1], p=[1 - k[1], k[1]])])
-    print(customers)
+    #print(customers)
     repair(customers)
     print("К концу дня на складе {} дисплеев и {} джеков".format(d_count, j_count))
     pay = -((d_gl_profits[1] * d_count) + (j_gl_profits[1] * j_count))
@@ -391,12 +391,14 @@ def move():
 
 
 for i in range(i_am_lazy):
+    time += 1
+    print("Ход ", time)
     if cash < 40 and j_count == 0 and d_count == 0:
-        print("Проиграл за {} дней".format(i))
+        print("Проиграл за {} дней".format(i+1))
         lose = True
         break
     move()
-    time += 1
+
 if lose:
     print("Такое нечасто случается, но гениальный искусственный интеллект подвёл наш гипотетический магазинчик.\n \
 За свою недолгую и не очень-то победоносную карьеру он успел обслужить {} клиентов, починив {} дисплеев и \
