@@ -1,6 +1,7 @@
 import random
 import numpy
 
+# Счётчик частоты выбора тех или иных стратегий
 d_count = 0
 j_count = 0
 cash = 1000
@@ -15,11 +16,11 @@ lose = False
 counters = [0, 0, 0, 0, 0, 0, 0]
 # Починено мониторов, джеков, не починено мониторов, джеков, куплено мониторов, джеков, покупатели
 
-switcher = 1    # Переключение в режим тупицы, при значении 1 в качестве стратегии берутся переменные
+switcher = 0    # Переключение в режим тупицы, при значении 1 в качестве стратегии берутся переменные
 raz = 3         # raz - кол-во дисплеев и dva - кол-во джеков
-dva = 4
+dva = 3
 
-i_am_lazy = 1400    # Количество ходов (мне было лень листать в конец файла)
+i_am_lazy = 100    # Количество ходов (мне было лень листать в конец файла)
 
 # Каким-то образом надо учесть в формулах ниже кол-во барахла на складе.
 # Покупка действительно будет дешевле при наличии уже имеющихся предметов.
@@ -236,7 +237,7 @@ def wisdom(strategies, needs):
 
     for i in range(len(needlist)):
         prob.append((d_probs[needlist[i][0]] * j_probs[needlist[i][1]]))
-
+    the_str = needlist[prob.index(max(prob))]
 
     # print(needlist[prob.index(max(prob))])
     b_i = []
@@ -268,6 +269,9 @@ def wisdom(strategies, needs):
     if switcher == 1:
         strategies[ge][0] = raz
         strategies[ge][1] = dva
+    elif switcher == 2:
+        strategies[ge][0] = the_str[0]
+        strategies[ge][1] = the_str[1]
 
     return strategies[ge]
 
@@ -324,7 +328,7 @@ def repair(customers):
         if person[0] == 1 and d_count > 0:
             d_count -= 1
             cash += d_sale_price
-            print("Починен дисплей, получено {} чего бы то ни было".format(d_sale_price))
+            print(f"Починен дисплей, получено {d_sale_price} чего бы то ни было")
             counters[0] += 1
         elif person[0] == 1 and d_count == 0:
             cash += d_gl_profits[2]
